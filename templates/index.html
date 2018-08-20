@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %}首页{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
 
 {% block main %}
-这是首页
+<div>
+    <div id="left-container">
+
+    </div>
+
+    <div id="right-container">
+
+    </div>
+</div>
 {% endblock %}

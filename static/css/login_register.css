@@ -1,8 +1,20 @@
-.form-main {
-    width: 300px;
-    margin: 0 auto;
+body {
+    background-color: #eee;
 }
 
-.page-title {
-    text-align: center;
+.form-container {
+    width: 500px;
+    padding: 20px;
+    margin: 100px auto;
+    border-radius: 5px;
+    background-color: white;
 }
+
+.title {
+    margin: 0;
+    padding: 30px;
+    text-align: center;
+    line-height: 20px;
+}
+
+

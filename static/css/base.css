@@ -2,12 +2,8 @@ html body {
     background: #f3f3f3;
 }
 
-.main {
-    background: white;
-    width: 800px;
-    margin: 0 auto;
-    overflow: hidden;
-    padding: 10px;
+.navbar {
+    margin-bottom: 0;
 }
 
 .page-title {

@@ -1,24 +1,52 @@
 # encoding: utf-8
 
 from flask import Flask
+from flask import jsonify
 from flask import request
 from flask import render_template
 from flask import redirect
 from flask import url_for
 from flask import session
+from flask import g
 from flask_pymongo import PyMongo
 import config
+
+from utils import login_required
 
 app = Flask(__name__)
 app.config.from_object(config)
 mongo = PyMongo(app)
 
-@app.route('/')
-def hello():
-    return render_template('index.html')
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
+
+@app.route('/ajax/<key>', methods=['GET', 'POST'])
+def ajax(key):
+    db = {
+        "nz": {
+            "title": "甜美女装",
+            "desc": "人见人爱",
+            "img": "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1136816972,2720068797&fm=27&gp=0.jpg"
+        },
+        "bb": {
+            "title": "奢侈包包",
+            "desc": "花见花开",
+            "img": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3918461983,1635614755&fm=27&gp=0.jpg"
+        },
+        "tx": {
+            "title": "人气拖鞋",
+            "desc": "车间车爆胎",
+            "img": "https://f11.baidu.com/it/u=3292798006,1346988019&fm=72"
+        }
+    }
+    return jsonify(db.get(key))
 
 
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 
@@ -34,9 +62,6 @@ def login():
             'username': username,
             'password': password
         })
-        print username
-        print password
-        print user
         if user:
             session['user_id'] = user['user_id']
             return redirect(url_for('index'))
@@ -85,8 +110,24 @@ def question():
     if request.method == 'GET':
         return render_template('question.html')
     else:
-        pass
+        title = request.form.get('title')
+        content = request.form.get('content')
+        user_id = session.get('user_id')
+        user = mongo.db.user.find_one({'user_id': user_id})
+        mongo.db.question.insert_one({
+            'title': title,
+            'content': content,
+            'author': user.get('username')
+        })
+        return u'发布成功'
 
+
+@app.route('/user_manage', methods=['GET', 'POST'])
+def user_manage():
+    if request.method == 'GET':
+        return render_template('user_manage.html')
+    else:
+        pass
 
 
 @app.context_processor
