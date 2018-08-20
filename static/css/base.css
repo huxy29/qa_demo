@@ -2,6 +2,11 @@ html body {
     background: #f3f3f3;
 }
 
+.main {
+    width: 800px;
+    margin: 0 auto;
+}
+
 .navbar {
     margin-bottom: 0;
 }

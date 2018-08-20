@@ -18,33 +18,6 @@ app.config.from_object(config)
 mongo = PyMongo(app)
 
 
-@app.route('/test')
-def test():
-    return render_template('test.html')
-
-
-@app.route('/ajax/<key>', methods=['GET', 'POST'])
-def ajax(key):
-    db = {
-        "nz": {
-            "title": "甜美女装",
-            "desc": "人见人爱",
-            "img": "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1136816972,2720068797&fm=27&gp=0.jpg"
-        },
-        "bb": {
-            "title": "奢侈包包",
-            "desc": "花见花开",
-            "img": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3918461983,1635614755&fm=27&gp=0.jpg"
-        },
-        "tx": {
-            "title": "人气拖鞋",
-            "desc": "车间车爆胎",
-            "img": "https://f11.baidu.com/it/u=3292798006,1346988019&fm=72"
-        }
-    }
-    return jsonify(db.get(key))
-
-
 @app.route('/')
 @login_required
 def index():
@@ -100,10 +73,57 @@ def register():
                 mongo.db.user.insert_one({
                     'user_id': max_user_id + 1,
                     'username': username,
-                    'password': password1
+                    'password': password1,
+                    'is_admin': 0
                 })
                 return redirect(url_for('login'))
 
+
+@app.route('/user_manage', methods=['GET', 'POST'])
+@login_required
+def user_manage():
+    if request.method == 'GET':
+        cursor = mongo.db.user.find()
+        user_list = []
+        for doc in cursor:
+            del doc['_id']
+            user_list.append(doc)
+        return render_template('user_manage.html', user_list=user_list)
+    else:
+        pass
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    print "function add_user"
+    username = request.form.get("username")
+    password = request.form.get("password")
+    is_admin = request.form.get("is_admin")
+    if is_admin == "true":
+        is_admin = 1
+    else:
+        is_admin = 0
+
+    user_id_list = [doc['user_id'] for doc in mongo.db.user.find()]
+    if user_id_list:
+        max_user_id = max(user_id_list)
+    else:
+        max_user_id = 0
+    mongo.db.user.insert_one({
+        'user_id': max_user_id + 1,
+        'username': username,
+        'password': password,
+        'is_admin': is_admin
+    })
+    return jsonify({"msg": "sucess"})
+
+
+@app.route('/del_user', methods=['POST'])
+def del_user():
+    user_id = request.form.get('user_id')
+    mongo.db.user.delete_one({
+        "user_id": int(user_id)
+    })
+    return jsonify({"msg": "success"})
 
 @app.route('/question', methods=['GET', 'POST'])
 def question():
@@ -122,12 +142,7 @@ def question():
         return u'发布成功'
 
 
-@app.route('/user_manage', methods=['GET', 'POST'])
-def user_manage():
-    if request.method == 'GET':
-        return render_template('user_manage.html')
-    else:
-        pass
+
 
 
 @app.context_processor
