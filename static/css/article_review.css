@@ -1,0 +1,28 @@
+
+.cover-img {
+    padding: 0 5px;
+}
+
+.cover-img > img {
+    display: block;
+    max-width: 100%;
+}
+
+.article-enter {
+    padding-bottom: 10px;
+    margin: 10px 0;
+    border-bottom: 1px solid black;
+}
+
+.row {
+    margin: 10px 0;
+}
+
+.article-list {
+    background-color: white;
+}
+
+
+
+
+

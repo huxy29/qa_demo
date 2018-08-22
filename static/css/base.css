@@ -1,16 +1,12 @@
-html body {
-    background: #f3f3f3;
+/*
+  基础css样式
+*/
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.main {
-    width: 800px;
-    margin: 0 auto;
-}
-
-.navbar {
-    margin-bottom: 0;
-}
-
-.page-title {
-    text-align: center;
+body {
+    background-color: #eeeeee;
 }

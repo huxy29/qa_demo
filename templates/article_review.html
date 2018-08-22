@@ -1,0 +1,112 @@
+{% extends 'base.html' %} {% block title %}文章审核{% endblock %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/article_review.css') }}">
+<script>
+    $(function () {
+        $(".nav > li").eq(0).addClass("active");
+        $(".check-article").click(function () {
+            var title = $(this).attr("title");
+            $.ajax({
+                type: "post",
+                url: "http://127.0.0.1:5000/get_article",
+                data: "title=" + title,
+                success: function (xhr) {
+                    $("#article-title").text(title);
+                    $("#article-content").html(xhr);
+                },
+                error: function () {
+                    console.log("error");
+                }
+            });
+        });
+    });
+</script> {% endblock %} {% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 article-list">
+            {% for article in article_list %}
+            <div class="row article-enter">
+                <div class="row clearfix">
+                    <div class="col-xs-8">
+                        <h5>{{ article.title }}</h5>
+                    </div>
+                    <div class="col-xs-2">
+                        <select class="form-control">
+                            <option>未审核</option>
+                            <option>通过</option>
+                            <option>标题不通过</option>
+                            <option>图片不通过</option>
+                            <option>文章内容不通过</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <button class="btn btn-primary check-article" title="{{ article.title }}">查看</button>
+                    </div>
+
+                </div>
+
+                <div class="row clearifx">
+                    <div class="col-xs-4 cover-img">
+                        <img src="{{ article.list_img_url[0] }}">
+                    </div>
+                    <div class="col-xs-4 cover-img">
+                        <img src="{{ article.list_img_url[1] }}">
+                    </div>
+                    <div class="col-xs-4 cover-img">
+                        <img src="{{ article.list_img_url[2] }}">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">1</a>
+                    </li>
+                    <li>
+                        <a href="#">2</a>
+                    </li>
+                    <li>
+                        <a href="#">3</a>
+                    </li>
+                    <li>
+                        <a href="#">4</a>
+                    </li>
+                    <li>
+                        <a href="#">5</a>
+                    </li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="col-sm-6 right-container">
+            <div class="row">
+                <button class="btn btn-primary">修改标题</button>
+                <button class="btn btn-primary">修改内容</button>
+                <button class="btn btn-primary">取消修改</button>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" id="article-title"></h3>
+                    </div>
+                    <div class="panel-body" id="article-content">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

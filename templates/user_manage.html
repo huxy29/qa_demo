@@ -1,109 +1,109 @@
-{% extends 'base.html' %}
-
-{% block title %}用户管理{% endblock %}
-
-{% block head %}
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+{% extends 'base.html' %} {% block title %}用户管理{% endblock %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_manage.css') }}">
 <script>
-    $(function() {
-        $(".nav > li").eq(2).addClass("active");
-        $("#add_user").click(function() {
+    $(function () {
+        $(".nav > li").eq(1).addClass("active");
+        $("#add_user").click(function () {
             var username = $("#username").val();
             var password = $("#password").val();
             var is_admin = $("#is_admin").prop("checked");
             $.ajax({
                 type: "post",
                 url: "http://127.0.0.1:5000/add_user",
-                data: "username="+username+"&password="+password+"&is_admin="+is_admin,
-                success: function(xhr) {
+                data: "username=" + username + "&password=" + password + "&is_admin=" + is_admin,
+                success: function (xhr) {
                     console.log(xhr);
                     window.location.reload();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.log("error");
                 }
             });
         });
 
-        $(".del").click(function() {
+        $(".del").click(function () {
             var del_user_id = $(this).attr("id").replace("del_user_", "");
             $.ajax({
                 type: "post",
                 url: "http://127.0.0.1:5000/del_user",
-                data: "user_id="+del_user_id,
-                success: function(xhr) {
+                data: "user_id=" + del_user_id,
+                success: function (xhr) {
                     console.log(xhr);
                     window.location.reload();
 
                 },
-                error: function() {
+                error: function () {
                     console.log("error");
                 }
             });
         });
-        
+
     })
-</script>
-{% endblock %}
-
-{% block main %}
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">添加用户</h3>
-    </div>
-    <div class="panel-body">
-            <form role="form">
-                    <div class="form-group">
-                        <label for="username" class="sr-only">用户名</label>
-                        <input type="text" class="form-control" id="username" placeholder="用户名"></input>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="sr-only">密码</label>
-                        <input type="password" class="form-control" id="password" placeholder="密码"></input>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="is_admin">是否管理员</input>
-                            </label>
+</script> {% endblock %} {% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">添加用户</h3>
+                </div>
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="username" class="sr-only">用户名</label>
+                            <input type="text" class="form-control" id="username" placeholder="用户名"></input>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" id="add_user" class="btn btn-primary">添加</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label for="password" class="sr-only">密码</label>
+                            <input type="password" class="form-control" id="password" placeholder="密码"></input>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="is_admin">是否管理员</input>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="add_user" class="btn btn-primary">添加</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">用户列表</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <td>#用户编号</td>
+                            <td>用户名</td>
+                            <td>用户类型</td>
+                            <td>操作</td>
+                        </thead>
+                        {% for user in user_list %}
+                        <tr>
+                            <td>{{ user.user_id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>
+                                {% if user.is_admin == 1 %} 管理员 {% else %} 普通用户 {% endif %}
+                            </td>
+                            <td>
+                                <button class="btn btn-primary del" id="del_user_{{ user.user_id }}">删除</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">用户列表</h3>
-    </div>
-    <div class="panel-body">
-        <table class="table table-bordered">
-            <thead>
-                <td>#用户编号</td>
-                <td>用户名</td>
-                <td>用户类型</td>
-                <td>操作</td>
-            </thead>
-            {% for user in user_list %}
-            <tr>
-                <td>{{ user.user_id }}</td>
-                <td>{{ user.username }}</td>
-                <td>
-                    {% if user.is_admin == 1 %}
-                    管理员
-                    {% else %}
-                    普通用户
-                    {% endif %}
-                </td>
-                <td><button class="btn-primary del" id="del_user_{{ user.user_id }}">删除</button></td>
-            </tr>
-            {% endfor %}
-        </table>
+            </div>
+        </div>
     </div>
 
 </div>

@@ -79,6 +79,16 @@ def register():
                 return redirect(url_for('login'))
 
 
+
+@app.route('/article_review', methods=['GEt', 'POST'])
+@login_required
+def article_review():
+    if request.method == 'GET':
+        cursor = mongo.db.article.find()
+        article_list = list(cursor)[:10]
+        return render_template('article_review.html', article_list=article_list)
+
+
 @app.route('/user_manage', methods=['GET', 'POST'])
 @login_required
 def user_manage():
@@ -125,24 +135,21 @@ def del_user():
     })
     return jsonify({"msg": "success"})
 
-@app.route('/question', methods=['GET', 'POST'])
-def question():
-    if request.method == 'GET':
-        return render_template('question.html')
-    else:
-        title = request.form.get('title')
-        content = request.form.get('content')
-        user_id = session.get('user_id')
-        user = mongo.db.user.find_one({'user_id': user_id})
-        mongo.db.question.insert_one({
-            'title': title,
-            'content': content,
-            'author': user.get('username')
-        })
-        return u'发布成功'
+@app.route('/get_article', methods=['post'])
+def get_article():
+    title = request.form.get("title")
+    article = list(mongo.db.article.find({"title": title}))[0]
+    html = ""
+    for item in article['content']:
+        if 'image' in item:
+            html += "<img src='%s' class='content-img' style='width: 400px; margin: 0 auto'>" % item['image']
+        else:
+            html += "<p>%s</p>" % item['text']
+    return html
 
-
-
+@app.route('/workload', methods=['GET', 'POST'])
+def workload():
+    return render_template("workload.html")
 
 
 @app.context_processor

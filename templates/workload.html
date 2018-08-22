@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block title %}工作量统计{% endblock %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_manage.css') }}">
+<script>
+    $(function () {
+        $(".nav > li").eq(2).addClass("active");
+
+    })
+</script> {% endblock %} {% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">审核文章数统计</h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-sm-4 col-sm-offset-3">
+                            <input type="text" class="form-control" placeholder="2018/10/21 - 2018/10/21">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-default">查看</button>
+                        </div>
+                    </div>
+                    <br>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <td>#用户编号</td>
+                                <td>用户名</td>
+                                <td>审核文章数</td>
+                            </thead>
+                            <tr>
+                                <td>1</td>
+                                <td>admin</td>
+                                <td>11</td>
+                            </tr>
+                        </table>
+                   
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
